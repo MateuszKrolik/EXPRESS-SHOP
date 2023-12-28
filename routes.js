@@ -12,6 +12,7 @@ const requestHandler = (req, res) => {
     res.write("</html>");
     return res.end(); // return to exit the function
   }
+
   if (url === "/message" && method === "POST") {
     const body = [];
     req.on("data", (chunk) => {
