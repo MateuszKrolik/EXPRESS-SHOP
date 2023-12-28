@@ -1,0 +1,29 @@
+{
+  "window.zoomLevel": 1,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "javascript.validate.enable": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "javascript.suggest.completeFunctionCalls": true,
+  "javascript.autoClosingTags": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.alwaysShowStatus": true,
+  "eslint.validate": ["javascript", "javascriptreact", "node"],
+  "eslint.options": {
+    "configFile": ".eslintrc.json"
+  },
+  "eslint.workingDirectories": ["./"],
+  "node.autoAttach": "on",
+  "debug.node.autoAttach": "on",
+  "debug.javascript.autoAttachFilter": "smart",
+  "debug.javascript.usePreview": true,
+  "javascript.suggest.autoImports": false,
+  "javascript.suggest.includeAutomaticOptionalChainCompletions": false,
+  "typescript.suggest.autoImports": false,
+  "typescript.suggest.includeAutomaticOptionalChainCompletions": false,
+  "files.autoSave": "afterDelay"
+  // "npm.enableScriptExplorer": true,
+  // "npm.scriptExplorerAction": "show"
+}
