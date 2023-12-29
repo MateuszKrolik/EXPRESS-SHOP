@@ -8,7 +8,7 @@ const shopRoutes = require("./routes/shop");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(adminRoutes); // order matters when using use() method, but not when using get()
+app.use("/admin",adminRoutes); // order matters when using use() method, but not when using get()
 app.use(shopRoutes);
 
 app.use((req, res, next) => {
