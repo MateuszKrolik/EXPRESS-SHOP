@@ -18,7 +18,7 @@ app.use("/admin", adminData.routes); // order matters when using use() method, b
 app.use(shopRoutes);
 
 app.use((req, res, next) => {
-  res.status(404).render("404");
+  res.status(404).render("404", { pageTitle: "Page Not Found" });
 });
 
 app.listen(3000); // Express.js internally calls http.createServer() and passes the Express app to it
