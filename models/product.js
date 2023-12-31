@@ -27,7 +27,9 @@ module.exports = class Product {
       });
     });
   }
-  static fetchAll() {
+  // callback refers to anonymous function passed as argument in fetchAll in controllers/products.js
+  static fetchAll(cb) {
+    // callback to avoid  'TypeError: Cannot read property 'length' of undefined'
     const p = path.join(
       // to avoid p is not defined error
       path.dirname(require.main.filename),
@@ -37,9 +39,11 @@ module.exports = class Product {
     // static methods can be called directly on the class itself and not on instances of the class
     fs.readFile(p, (err, fileContent) => {
       if (err) {
-        return []; //dont need else because return stops execution of the function
+        // return []; //dont need else because return stops execution of the function
+        cb([]); // cb is a callback function
       }
-      return JSON.parse(fileContent);
+      //   return JSON.parse(fileContent);
+      cb(JSON.parse(fileContent));
     });
     return products;
   }
