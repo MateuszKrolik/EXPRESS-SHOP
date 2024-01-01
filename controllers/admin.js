@@ -1,7 +1,8 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
-  res.render("admin/add-product", { // .ejs can be omitted
+  res.render("admin/add-product", {
+    // .ejs can be omitted
     pageTitle: "Add Product",
     path: "/admin/add-product",
     formsCSS: true,
@@ -17,16 +18,13 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect("/");
 };
 
-exports.getProducts = (req, res, next) => {
-  // const products = Product.fetchAll();
+exports.getAdminProducts = (req, res, next) => {
   Product.fetchAll((products) => {
-    res.render("shop/product-list", { // .ejs can be omitted
+    res.render("admin/products", {
+      // .ejs can be omitted
       prods: products,
-      pageTitle: "Shop",
-      path: "/",
-      hasProducts: products.length > 0,
-      activeShop: true,
-      productCSS: true,
+      pageTitle: "Admin Products",
+      path: "/admin/products",
     });
   });
 };
