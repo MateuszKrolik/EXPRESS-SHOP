@@ -1,1 +1,14 @@
-[{"title":"buk"},{"title":"another"},{"title":"buk2"},{"title":"buk3"},{"title":"buk4"},{"title":"book5"}]
+[
+  {
+    "title": "The Bible",
+    "imageUrl": "https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png",
+    "description": "SAY10",
+    "price": "6.66"
+  },
+  {
+    "title": "THE BIBLE",
+    "imageUrl": "https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png",
+    "description": "SAY10\r\n",
+    "price": "6.66"
+  }
+]

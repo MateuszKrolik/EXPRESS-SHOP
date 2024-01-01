@@ -27,8 +27,12 @@ const getProductsFromFile = (cb) => {
 const products = [];
 
 module.exports = class Product {
-  constructor(t) {
-    this.title = t; // this refers to the object created based on this class
+  constructor(title, imageUrl, description, price) {
+    //names dont have to match
+    this.title = title; // this refers to the object created based on this class
+    this.imageUrl = imageUrl;
+    this.description = description;
+    this.price = price;
   }
   save() {
     getProductsFromFile((products) => {
