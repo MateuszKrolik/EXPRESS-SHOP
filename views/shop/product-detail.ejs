@@ -10,9 +10,7 @@
                 <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
                 <h2>$<%= product.price %></h2>
                 <p><%= product.description %></p>
-                <form action="/cart" method="POST">
-                    <button class="btn">Add to Cart</button>
-                    
+                <%- include('../includes/add-to-cart.ejs') %>
             </div>
         </main>
         <%- include('../includes/end.ejs') %>
