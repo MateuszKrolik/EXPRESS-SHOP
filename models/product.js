@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const Cart = require("./cart");
+
 // global to avoid p is not defined error
 const p = path.join(
   path.dirname(require.main.filename),
@@ -73,12 +75,15 @@ module.exports = class Product {
   }
   static deleteById(id) {
     getProductsFromFile((products) => {
+      //extract product to get price
+      const product = products.find((prod) => prod.id === id);
       const updatedProducts = products.filter((prod) => prod.id !== id);
       if (updatedProducts) {
         const updatedProducts = products.filter((prod) => prod.id !== id);
         fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
           if (!err) {
             //remove from cart in next commit
+            Cart.deleteProduct(id, product.price);
           }
         });
       }
