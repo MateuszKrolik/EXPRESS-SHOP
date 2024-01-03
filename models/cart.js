@@ -45,8 +45,11 @@ module.exports = class Cart {
       //update cart
       const updatedCart = { ...JSON.parse(fileContent) };
       //find out how often product occurs
-      const product = updatedCart.products.findIndex((prod) => prod.id === id);
+      const product = updatedCart.products.find((prod) => prod.id === id);
       //find out what qty is
+      if (!product) {
+        return;
+      }
       const productQty = product.qty;
       //update product and total price
       updatedCart.products = updatedCart.products.filter(
