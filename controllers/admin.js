@@ -16,7 +16,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title, imageUrl, description, price); //same order as constructor
+  const product = new Product(null, title, imageUrl, description, price); //null for id creates a new product
   product.save();
   res.redirect("/");
 };
@@ -45,7 +45,23 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  
+  //3 things: fetch info for product, create new product with updated info and call save
+  const prodId = req.body.productId;
+  const updatedTitle = req.body.title;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedPrice = req.body.price;
+  const updatedDesc = req.body.description;
+  //create new product
+  const updatedProduct = new Product(
+    prodId,
+    updatedTitle,
+    updatedImageUrl,
+    updatedDesc,
+    updatedPrice
+  );
+  //call save
+  updatedProduct.save();
+  res.redirect("/admin/products");
 };
 
 exports.getAdminProducts = (req, res, next) => {

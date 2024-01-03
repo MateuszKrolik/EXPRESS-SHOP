@@ -27,7 +27,8 @@ const getProductsFromFile = (cb) => {
 const products = [];
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     //names dont have to match
     this.title = title; // this refers to the object created based on this class
     this.imageUrl = imageUrl;
@@ -35,12 +36,28 @@ module.exports = class Product {
     this.price = price;
   }
   save() {
-    this.id = Math.random().toString();
     getProductsFromFile((products) => {
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), (err) => {
-        console.log(err);
-      });
+      //use also for updating an existing product
+      //check if already have na id
+      if (this.id) {
+        //update the product
+        const existingProductIndex = products.findIndex(
+          (prod) => prod.id === this.id
+        );
+        //replace product array with new product
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        //write to file
+        fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+          console.log(err);
+        });
+      } else {
+        this.id = Math.random().toString();
+        products.push(this);
+        fs.writeFile(p, JSON.stringify(products), (err) => {
+          console.log(err);
+        });
+      }
     });
   }
   // arrow function ensures that this refers to the class
