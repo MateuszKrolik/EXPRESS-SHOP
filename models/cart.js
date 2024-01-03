@@ -59,4 +59,16 @@ module.exports = class Cart {
       });
     });
   }
+  //fetch all products and return to cart
+  static getCart(cb) {
+    fs.readFile(p, (err, fileContent) => {
+      const cart = JSON.parse(fileContent);
+      //get product ids
+      if (err) {
+        cb(null);
+      } else {
+        cb(cart);
+      }
+    });
+  }
 };
