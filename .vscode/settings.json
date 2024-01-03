@@ -1,5 +1,5 @@
 {
-  "window.zoomLevel": 1,
+  "window.zoomLevel": 0,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "javascript.validate.enable": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
