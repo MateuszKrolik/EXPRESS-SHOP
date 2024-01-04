@@ -10,7 +10,14 @@ module.exports = class Product {
     this.description = description;
     this.price = price;
   }
-  save() {}
+  save() {
+    return db.execute(
+      //returns a promise that execute yields
+      "INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)",
+      //? is a placeholder to prevent SQL injection
+      [this.title, this.price, this.imageUrl, this.description]
+    );
+  }
   static deleteById(id) {}
   static fetchAll() {
     return db.execute("SELECT * FROM products");
