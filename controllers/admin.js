@@ -16,13 +16,21 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(null, title, imageUrl, description, price); //null for id creates a new product
-  product
-    .save()
-    .then(() => {
-      res.redirect("/");
+  //create new product
+  Product.create({
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description,
+  })
+    .then((result) => {
+      // console.log(result);
+      console.log("Created Product");
+      //send response in next commit
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -32,7 +40,7 @@ exports.getEditProduct = (req, res, next) => {
   }
   //prepopulate the form with the product info
   const prodId = req.params.productId;
-  Product.findById(prodId, (product) => {
+  Product.findByPk(prodId, (product) => {
     if (!product) {
       return res.redirect("/");
     }

@@ -16,7 +16,7 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
   // console.log(prodId); //cant log asynch func
-  Product.findById(prodId)
+  Product.findByPk(prodId)
     .then(([product]) => {
       console.log(product);
       res.render("shop/product-detail", {
@@ -68,7 +68,7 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   //get product and add to cart
-  Product.findById(prodId, (product) => {
+  Product.findByPk(prodId, (product) => {
     Cart.addProduct(prodId, product.price);
   });
   res.redirect("/cart");
@@ -78,7 +78,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
   //remove product from cart not product itself
   const prodId = req.body.productId;
   //get price of product to be deleted
-  Product.findById(prodId, (product) => {
+  Product.findByPk(prodId, (product) => {
     Cart.deleteProduct(prodId, product.price);
     res.redirect("/cart");
   });
