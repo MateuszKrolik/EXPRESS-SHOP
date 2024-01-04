@@ -16,13 +16,16 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
   // console.log(prodId); //cant log asynch func
-  Product.findById(prodId, (product) => {
-    res.render("shop/product-detail", {
-      product: product,
-      pageTitle: product.title,
-      path: "/products",
-    });
-  });
+  Product.findById(prodId)
+    .then(([product]) => {
+      console.log(product);
+      res.render("shop/product-detail", {
+        product: product[0], //product is an array of one object, view expects a single object not an array of objects
+        pageTitle: product.title,
+        path: "/products",
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getIndex = (req, res, next) => {
