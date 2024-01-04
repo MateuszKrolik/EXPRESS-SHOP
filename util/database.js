@@ -1,12 +1,8 @@
-const mysql = require("mysql2");
+const Sequelize = require("sequelize");
 
-//set up connection pool
-const pool = mysql.createPool({
+const sequelize = new Sequelize("express-shop", "root", "express-shop", {
+  dialect: "mysql",
   host: "localhost",
-  user: "root",
-  database: "express-shop",
-  password: "express-shop",
 });
 
-//promises instead of callbacks
-module.exports = pool.promise();
+module.exports = sequelize; //db connection pool managed by sequelize
