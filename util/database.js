@@ -5,7 +5,7 @@ const pool = mysql.createPool({
   host: "localhost",
   user: "root",
   database: "express-shop",
-  password: "password",
+  password: "express-shop",
 });
 
 //promises instead of callbacks
