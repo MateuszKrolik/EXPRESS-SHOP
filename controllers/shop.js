@@ -18,11 +18,21 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
   // console.log(prodId); //cant log asynch func
+  // Product.findAll({ where: { id: prodId } })
+  //   .then((products) => {
+  //     res.render("shop/product-detail", {
+  //       product: products[0],
+  //       pageTitle: products[0].title,
+  //       path: "/products",
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+  // };
   Product.findByPk(prodId)
-    .then(([product]) => {
+    .then((product) => {
       console.log(product);
       res.render("shop/product-detail", {
-        product: product[0], //product is an array of one object, view expects a single object not an array of objects
+        product: product,
         pageTitle: product.title,
         path: "/products",
       });

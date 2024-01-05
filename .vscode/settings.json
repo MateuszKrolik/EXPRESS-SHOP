@@ -22,7 +22,7 @@
   "debug.node.autoAttach": "on",
   "debug.javascript.autoAttachFilter": "smart",
   "debug.javascript.usePreview": true,
-  "javascript.suggest.autoImports": false,
+  "javascript.suggest.autoImports": true,
   "javascript.suggest.includeAutomaticOptionalChainCompletions": false,
   "typescript.suggest.autoImports": false,
   "typescript.suggest.includeAutomaticOptionalChainCompletions": false,
