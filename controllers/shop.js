@@ -78,6 +78,7 @@ exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   //make cart available outside anonymous function
   let fetchedCart;
+  let newQuantity = 1; //top level variable
   req.user
     .getCart()
     .then((cart) => {
@@ -90,19 +91,17 @@ exports.postCart = (req, res, next) => {
         //if product already exists in cart
         product = products[0];
       }
-      let newQuantity = 1;
       if (product) {
-        //if product is anything but undefined
-        //get old quantity and change it
+        const oldQuantity = product.cartItem.quantity;
+        newQuantity = oldQuantity + 1;
+        return product;
       }
-      return Product.findByPk(prodId)
-        .then((product) => {
-          return fetchedCart.addProduct(product, {
-            //many-to-many magic method
-            through: { quantity: newQuantity },
-          });
-        })
-        .catch((err) => console.log(err));
+      return Product.findByPk(prodId);
+    })
+    .then((product) => {
+      return fetchedCart.addProduct(product, {
+        through: { quantity: newQuantity },
+      });
     })
     .then(() => {
       res.redirect("/cart");
