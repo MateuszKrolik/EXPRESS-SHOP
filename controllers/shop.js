@@ -117,6 +117,19 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
   //remove product from cart not product itself
   const prodId = req.body.productId;
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts({ where: { id: prodId } });
+    })
+    .then((products) => {
+      const product = products[0];
+      return product.cartItem.destroy(); //magic method to remove from in between table
+    })
+    .then((result) => {
+      res.redirect("/cart");
+    })
+    .catch((err) => console.log(err));
   //get price of product to be deleted
   Product.findByPk(prodId, (product) => {
     Cart.deleteProduct(prodId, product.price);
