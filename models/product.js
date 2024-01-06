@@ -1,4 +1,4 @@
-const mongoConnect = require("../util/database");
+const getDb = require("../util/database").getDb; //import by accessing getDb
 
 class Product {
   constructor(title, price, description, imageUrl) {
@@ -35,6 +35,6 @@ const Product = sequelize.define("product", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-}); 
+});
 
 module.exports = Product;
