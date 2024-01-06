@@ -43,8 +43,12 @@ exports.getEditProduct = (req, res, next) => {
   }
   //prepopulate the form with the product info
   const prodId = req.params.productId;
-  Product.findByPk(prodId)
-    .then((product) => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    // Product.findByPk(prodId)
+    .then((products) => {
+      //array of products
+      const product = products[0];
       if (!product) {
         return res.redirect("/");
       }
@@ -77,7 +81,6 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDesc = req.body.description;
-
   Product.findByPk(prodId)
     .then((product) => {
       product.title = updatedTitle;
@@ -105,7 +108,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getAdminProducts = (req, res, next) => {
-  Product.findAll()
+  // Product.findAll()
+  req.user
+    .getProducts()
     .then((products) => {
       console.log(products);
       res.render("admin/products", {
