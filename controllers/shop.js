@@ -76,11 +76,43 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  //get product and add to cart
-  Product.findByPk(prodId, (product) => {
-    Cart.addProduct(prodId, product.price);
-  });
-  res.redirect("/cart");
+  //make cart available outside anonymous function
+  let fetchedCart;
+  req.user
+    .getCart()
+    .then((cart) => {
+      fetchedCart = cart;
+      return cart.getProducts({ where: { id: prodId } });
+    })
+    .then((products) => {
+      let product;
+      if (products.length > 0) {
+        //if product already exists in cart
+        product = products[0];
+      }
+      let newQuantity = 1;
+      if (product) {
+        //if product is anything but undefined
+        //get old quantity and change it
+      }
+      return Product.findByPk(prodId)
+        .then((product) => {
+          return fetchedCart.addProduct(product, {
+            //many-to-many magic method
+            through: { quantity: newQuantity },
+          });
+        })
+        .catch((err) => console.log(err));
+    })
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err) => console.log(err));
+  // const prodId = req.body.productId;
+  // Product.findByPk(prodId, (product) => {
+  //   Cart.addProduct(prodId, product.price);
+  // });
+  // res.redirect("/cart");
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
