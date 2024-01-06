@@ -1,7 +1,17 @@
-const Sequelize = require("sequelize");
-//capitalized because it is a constructor function/class
-const sequelize = require("../util/database");
-//db connection pool
+const mongoConnect = require("../util/database");
+
+class Product {
+  constructor(title, price, description, imageUrl) {
+    this.title = title;
+    this.price = price;
+    this.description = description;
+    this.imageUrl = imageUrl;
+  }
+  //save in db
+  save() {
+    //manage one connection and return access to mongo
+  }
+}
 
 const Product = sequelize.define("product", {
   //define model
