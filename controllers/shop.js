@@ -55,29 +55,24 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  //fetch all products and return to cart
-  Cart.getCart((cart) => {
-    //get info about products in cart
-    Product.fetchAll((products) => {
-      const cartProducts = [];
-      //filter products in cart
-      for (let product of products) {
-        const cartProductData = cart.products.find(
-          (prod) => prod.id === product.id
-        );
-        if (cartProductData) {
-          cartProducts.push({ productData: product, qty: cartProductData.qty });
-        }
-      }
-      res.render("shop/cart", {
-        // .ejs can be omitted
-        pageTitle: "Your Cart",
-        path: "/cart",
-        products: cartProducts, //return and send to view
-      });
-    });
-  });
+  //use cart and get all products associated w/ user and render them to screen
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart
+        .getProducts()
+        .then((products) => {
+          res.render("shop/cart", {
+            pageTitle: "Your Cart",
+            path: "/cart",
+            products: products,
+          });
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
 };
+// add product to cart in next commit
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
