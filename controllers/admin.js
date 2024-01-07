@@ -16,9 +16,9 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title , price , description , imageUrl);
-    //create new product
-    product
+  const product = new Product(title, price, description, imageUrl);
+  //create new product
+  product
     .save()
     .then((result) => {
       // console.log(result);
@@ -101,28 +101,18 @@ exports.postAddProduct = (req, res, next) => {
 //   // res.redirect("/admin/products");
 // };
 
-// exports.getAdminProducts = (req, res, next) => {
-//   // Product.findAll()
-//   req.user
-//     .getProducts()
-//     .then((products) => {
-//       console.log(products);
-//       res.render("admin/products", {
-//         prods: products,
-//         pageTitle: "Admin Products",
-//         path: "/admin/products",
-//       });
-//     })
-//     .catch((err) => console.log(err));
-//   //   Product.fetchAll((products) => {
-//   //     res.render("admin/products", {
-//   //       // .ejs can be omitted
-//   //       prods: products,
-//   //       pageTitle: "Admin Products",
-//   //       path: "/admin/products",
-//   //     });
-//   //   });
-// };
+exports.getAdminProducts = (req, res, next) => {
+  Product.fetchAll()
+    .then((products) => {
+      console.log(products);
+      res.render("admin/products", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+      });
+    })
+    .catch((err) => console.log(err));
+};
 
 // exports.postDeleteProduct = (req, res, next) => {
 //   const prodId = req.body.productId;
