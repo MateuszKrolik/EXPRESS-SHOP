@@ -10,31 +10,14 @@ class Product {
   //save in db
   save() {
     //manage one connection and return access to mongo
+    const db = getDb();
+    db.collection("products")
+      .inserOne(this)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
   }
 }
-
-const Product = sequelize.define("product", {
-  //define model
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
-  //define fields
-  title: Sequelize.STRING,
-  price: {
-    type: Sequelize.DOUBLE,
-    allowNull: false,
-  },
-  imageUrl: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-});
 
 module.exports = Product;
