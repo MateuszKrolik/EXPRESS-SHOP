@@ -11,10 +11,11 @@ class Product {
   save() {
     //manage one connection and return access to mongo
     const db = getDb();
-    db.collection("products")
-      .inserOne(this)
+    return db //return to treat as promise
+      .collection("products")
+      .insertOne(this)
       .then((result) => {
-        console.log(result);
+        console.log(this);
       })
       .catch((err) => console.log(err));
   }
