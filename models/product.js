@@ -19,6 +19,21 @@ class Product {
       })
       .catch((err) => console.log(err));
   }
+  //fetch all products
+  static fetchAll() {
+    const db = getDb(); //get access to db
+    return db
+      .collection("products")
+      .find()
+      .toArray() //returns cursor, toArray for small amount of data, for large amount use pagination
+      .then((products) => {
+        console.log(products);
+        return products;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 }
 
 module.exports = Product;

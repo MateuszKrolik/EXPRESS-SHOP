@@ -12,7 +12,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 const adminRoutes = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
+const shopRoutes = require("./routes/shop");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -24,11 +24,11 @@ app.use((req, res, next) => {
   //     next(); // continue with next middleware
   //   })
   //   .catch((err) => console.log(err));
-  next();//otherwise every incoming request will be blocked
+  next(); //otherwise every incoming request will be blocked
 });
 
 app.use("/admin", adminRoutes); // order matters when using use() method, but not when using get()
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 app.use(errorController.get404);
 
