@@ -20,7 +20,9 @@ class User {
     // const cartProducts = this.cart.items.findIndex(cp => {
     //   return cp._id === product._id;
     // });
-    const updatedCart = { items: [{ ...product, quantity: 1 }] }; //spread operator to pull out all properties of product, then overwrite its quantity property
+    const updatedCart = {
+      items: [{ productId: new ObjectId(product._id), quantity: 1 }],
+    }; //spread operator to pull out all properties of product, then overwrite its quantity property
     const db = getDb();
     return db
       .collection("users")
