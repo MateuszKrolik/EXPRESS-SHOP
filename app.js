@@ -25,7 +25,6 @@ app.use((req, res, next) => {
       next(); // continue with next middleware
     })
     .catch((err) => console.log(err));
-  next(); //otherwise every incoming request will be blocked
 });
 
 app.use("/admin", adminRoutes); // order matters when using use() method, but not when using get()
