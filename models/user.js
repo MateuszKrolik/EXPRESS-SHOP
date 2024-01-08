@@ -17,11 +17,22 @@ class User {
   }
   //add to cart
   addToCart(product) {
-    // const cartProducts = this.cart.items.findIndex(cp => {
-    //   return cp._id === product._id;
-    // });
+    const cartProductIndex = this.cart.items.findIndex((cp) => {
+      return cp.productId.toString() === product._id.toString();
+    }); //if it's sth else than -1, then it already exists in cart
+    let newQuantity = 1;
+    const updatedCartItems = [...this.cart.items]; //can now use array methods on it without changing the original cart
+    if (cartProductIndex >= 0) {
+      newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+      updatedCartItems[cartProductIndex].quantity = newQuantity;
+    } else {
+      updatedCartItems.push({
+        productId: new ObjectId(product._id),
+        quantity: newQuantity,
+      });
+    }
     const updatedCart = {
-      items: [{ productId: new ObjectId(product._id), quantity: 1 }],
+      items: updatedCartItems,
     }; //spread operator to pull out all properties of product, then overwrite its quantity property
     const db = getDb();
     return db
