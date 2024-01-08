@@ -58,17 +58,12 @@ exports.getCart = (req, res, next) => {
   //use cart and get all products associated w/ user and render them to screen
   req.user
     .getCart()
-    .then((cart) => {
-      return cart
-        .getProducts()
-        .then((products) => {
-          res.render("shop/cart", {
-            pageTitle: "Your Cart",
-            path: "/cart",
-            products: products,
-          });
-        })
-        .catch((err) => console.log(err));
+    .then((products) => {
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        path: "/cart",
+        products: products,
+      });
     })
     .catch((err) => console.log(err));
 };
@@ -82,9 +77,7 @@ exports.postCart = (req, res, next) => {
     })
     .then((result) => {
       console.log(result);
-    })
-    .catch((err) => {
-      console.log(err);
+      res.redirect("/cart");
     });
   // let fetchedCart;
   // let newQuantity = 1; //top level variable
@@ -140,7 +133,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
     })
     .catch((err) => console.log(err));
   //get price of product to be deleted
-  Product.findByPk(prodId, (product) => {
+  Product.findById(prodId, (product) => {
     Cart.deleteProduct(prodId, product.price);
     res.redirect("/cart");
   });

@@ -8,14 +8,14 @@
             <% if (products.length > 0) { %>
                 <ul class="cart__item-list">
                     <% products.forEach(p => { %>
-                    <li class="cart__item">
-                        <h1><%= p.title %></h1> 
-                        <h2>Quantity: <%= p.cartItem.quantity %></h2>
-                        <form action="/cart-delete-item" method="POST">
-                            <input type="hidden" name="productId" value="<%= p.id %>">
-                            <button class="btn danger" type="submit">Delete</button>
-                        </form>
-                    </li>
+                        <li class="cart__item">
+                            <h1><%= p.title %></h1> 
+                            <h2>Quantity: <%= p.quantity %></h2>
+                            <form action="/cart-delete-item" method="POST">
+                                <input type="hidden" name="productId" value="<%= p._id %>">
+                                <button class="btn danger" type="submit">Delete</button>
+                            </form>
+                        </li>
                     <% }) %>
                 </ul>
                 <div class="centered">
