@@ -105,14 +105,13 @@ exports.postOrder = (req, res, next) => {
       return req.user.clearCart(); //clear cart after order is placed, clearCart is a method from user model
     })
     .then(() => {
-      res.redirect("/orders");//execute only after clearCart is done
+      res.redirect("/orders"); //execute only after clearCart is done
     })
     .catch((err) => console.log(err));
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
+  Order.find({ "user.userId": req.user._id }) //find all orders where user id is equal to logged-in user id
     .then((orders) => {
       res.render("shop/orders", {
         pageTitle: "Your Orders",
