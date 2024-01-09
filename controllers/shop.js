@@ -86,10 +86,11 @@ exports.postOrder = (req, res, next) => {
   req.user
     .populate("cart.items.productId")
     .then((user) => {
+      console.log(user.cart.items);
       const products = user.cart.items.map((i) => {
         //i refers to items
         //map to store changed items in products array
-        return { quantity: i.quantity, productData: i.productId };
+        return { quantity: i.quantity, productData: { ...i.productId._doc } }; //._doc helps omit metadata, spread operator inside new object to pull out all data from document, then store it in productData
       });
       const order = new Order({
         user: {
