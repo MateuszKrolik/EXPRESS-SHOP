@@ -114,6 +114,8 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getAdminProducts = (req, res, next) => {
   Product.find() //gives documents as well as cursor
+    // .select("title price -_id") //selects title and price, -id excludes id
+    // .populate("userId", "name") //populate userId with name
     .then((products) => {
       console.log(products);
       res.render("admin/products", {

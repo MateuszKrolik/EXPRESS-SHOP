@@ -25,6 +25,30 @@ const userSchema = new Schema({
   },
 });
 
+//it has to be a regular function, so that 'this' refers to the schema
+//methods key is an object that allows to add own methods to schema
+userSchema.methods.addToCart = function (product) {
+  const cartProductIndex = this.cart.items.findIndex((cp) => {
+    return cp.productId.toString() === product._id.toString();
+  }); //if it's sth else than -1, then it already exists in cart
+  let newQuantity = 1;
+  const updatedCartItems = [...this.cart.items]; //can now use array methods on it without changing the original cart
+  if (cartProductIndex >= 0) {
+    newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+    updatedCartItems[cartProductIndex].quantity = newQuantity;
+  } else {
+    updatedCartItems.push({
+      productId: product._id, //mongoose will automatically wrap it in an object id
+      quantity: newQuantity,
+    });
+  }
+  const updatedCart = {
+    items: updatedCartItems,
+  }; //spread operator to pull out all properties of product, then overwrite its quantity property
+  this.cart = updatedCart;
+  return this.save();//to not update manually
+};
+
 module.exports = mongoose.model("User", userSchema);
 
 // const mongodb = require("mongodb");
@@ -46,31 +70,6 @@ module.exports = mongoose.model("User", userSchema);
 //   }
 //   //add to cart
 //   addToCart(product) {
-//     const cartProductIndex = this.cart.items.findIndex((cp) => {
-//       return cp.productId.toString() === product._id.toString();
-//     }); //if it's sth else than -1, then it already exists in cart
-//     let newQuantity = 1;
-//     const updatedCartItems = [...this.cart.items]; //can now use array methods on it without changing the original cart
-//     if (cartProductIndex >= 0) {
-//       newQuantity = this.cart.items[cartProductIndex].quantity + 1;
-//       updatedCartItems[cartProductIndex].quantity = newQuantity;
-//     } else {
-//       updatedCartItems.push({
-//         productId: new ObjectId(product._id),
-//         quantity: newQuantity,
-//       });
-//     }
-//     const updatedCart = {
-//       items: updatedCartItems,
-//     }; //spread operator to pull out all properties of product, then overwrite its quantity property
-//     const db = getDb();
-//     return db
-//       .collection("users")
-//       .updateOne(
-//         { _id: new ObjectId(this._id) },
-//         { $set: { cart: updatedCart } }
-//       ); //overwrite cart with updatedCart
-//   }
 
 //   getCart() {
 //     const db = getDb();
