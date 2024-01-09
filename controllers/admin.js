@@ -42,7 +42,7 @@ exports.getEditProduct = (req, res, next) => {
   }
   //prepopulate the form with the product info
   const prodId = req.params.productId;
-  Product.findById(prodId)
+  Product.findById(prodId) //findById is a mongoose method
     // Product.findByPk(prodId)
     .then((product) => {
       if (!product) {
@@ -77,15 +77,22 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDesc = req.body.description;
-  const product = new Product(
-    updatedTitle,
-    updatedPrice,
-    updatedDesc,
-    updatedImageUrl,
-    prodId
-  );
-  product
-    .save()
+
+  // const product = new Product(
+  //   updatedTitle,
+  //   updatedPrice,
+  //   updatedDesc,
+  //   updatedImageUrl,
+  //   prodId
+  // );
+  Product.findById(prodId)
+    .then((product) => {
+      product.title = updatedTitle;
+      product.imageUrl = updatedImageUrl;
+      product.price = updatedPrice;
+      product.description = updatedDesc;
+      return product.save();
+    })
     .then((result) => {
       //success promise
       console.log("UPDATED PRODUCT");
@@ -105,7 +112,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getAdminProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find() //gives documents as well as cursor
     .then((products) => {
       console.log(products);
       res.render("admin/products", {
