@@ -16,17 +16,15 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    null,
-    req.user._id
-  ); //null for id because mongo will create one
+  const product = new Product({
+    title: title, //part on right refers to data received from controller action
+    price: price, //part on left refers keys defined in product schema
+    description: description,
+    imageUrl: imageUrl,
+  }); //null for id because mongo will create one
   //create new product
   product
-    .save()
+    .save() //provided by mongoose
     .then((result) => {
       // console.log(result);
       console.log("Created Product");
