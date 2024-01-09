@@ -1,6 +1,5 @@
-const product = require("../models/product");
 const Product = require("../models/product");
-//dont need to require Cart/Oder as i dont access it directly
+const Order = require("../models/order");
 
 exports.getProducts = (req, res, next) => {
   Product.find() //fetch all products,turn to cursor for large amount of data(pageination)
@@ -50,7 +49,6 @@ exports.getCart = (req, res, next) => {
   req.user
     .populate("cart.items.productId")
     .then((user) => {
-      console.log(user.cart.items);
       const products = user.cart.items;
       res.render("shop/cart", {
         path: "/cart",
@@ -85,35 +83,29 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .addOrder() //addOrder is a method i created in user model
-    // .getCart()
-    // .then((cart) => {
-    //   fetchedCart = cart; //store cart in variable to use in next then block
-    //   return cart.getProducts();
-    // })
-    // .then((products) => {
-    //   return req.user
-    //     .createOrder()
-    //     .then((order) => {
-    //       return order.addProducts(
-    //         products.map((product) => {
-    //           product.orderItem = { quantity: product.cartItem.quantity };
-    //           return product;
-    //         })
-    //       );
-    //     })
-    //     .catch((err) => console.log(err));
-    // })
-    // .then((result) => {
-    //   return fetchedCart.setProducts(null);
-    // })
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items.map((i) => {
+        //i refers to items
+        //map to store changed items in products array
+        return { quantity: i.quantity, productData: i.productId };
+      });
+      const order = new Order({
+        user: {
+          name: req.user.name, //req.user is a full user object
+          userId: req.user, //mongoose will automatically pick the id
+        },
+        products: products,
+      });
+      return order.save();
+    })
     .then((result) => {
       res.redirect("/orders");
     })
     .catch((err) => console.log(err));
 };
+
 exports.getOrders = (req, res, next) => {
   req.user
     .getOrders()
