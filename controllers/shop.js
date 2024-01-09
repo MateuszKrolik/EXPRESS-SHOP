@@ -77,23 +77,11 @@ exports.postCartDeleteProduct = (req, res, next) => {
   //remove product from cart not product itself
   const prodId = req.body.productId;
   req.user
-    .deleteItemFromCart(prodId) //deleteItemFromCart is a method i created in user model
-    // .then((cart) => {
-    //   return cart.getProducts({ where: { id: prodId } });
-    // })
-    // .then((products) => {
-    //   const product = products[0];
-    //   return product.cartItem.destroy(); //magic method to remove from in between table
-    // })
+    .removeFromCart(prodId) //removeFromCart is a method i created in user model
     .then((result) => {
       res.redirect("/cart");
     })
     .catch((err) => console.log(err));
-  //get price of product to be deleted
-  Product.findById(prodId, (product) => {
-    Cart.deleteProduct(prodId, product.price);
-    res.redirect("/cart");
-  });
 };
 
 exports.postOrder = (req, res, next) => {
