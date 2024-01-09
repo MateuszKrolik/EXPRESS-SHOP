@@ -1,3 +1,26 @@
+const mongoose = require("mongoose");
+
+const Schema = mongoose.Schema; //constructor function
+
+const productSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number, //can also add validators
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  imageUrl: {
+    type: String, //can also add validators
+    required: true,
+  },
+});
+
 // const mongodb = require("mongodb");
 // const getDb = require("../util/database").getDb; //import by accessing getDb
 
