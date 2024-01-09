@@ -126,9 +126,8 @@ exports.getAdminProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.findByIdAndDelete(prodId) //findByIdAndDelete is a mongoose method
     .then(() => {
-      //success promise
       console.log("DESTROYED PRODUCT");
       res.redirect("/admin/products");
     })
