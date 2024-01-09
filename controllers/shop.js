@@ -102,7 +102,10 @@ exports.postOrder = (req, res, next) => {
       return order.save();
     })
     .then((result) => {
-      res.redirect("/orders");
+      return req.user.clearCart(); //clear cart after order is placed, clearCart is a method from user model
+    })
+    .then(() => {
+      res.redirect("/orders");//execute only after clearCart is done
     })
     .catch((err) => console.log(err));
 };
