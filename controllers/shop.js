@@ -1,3 +1,4 @@
+const product = require("../models/product");
 const Product = require("../models/product");
 //dont need to require Cart/Oder as i dont access it directly
 
@@ -18,7 +19,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
-  Product.findById(prodId)//findById is a mongoose method
+  Product.findById(prodId) //findById is a mongoose method
     .then((product) => {
       console.log(product);
       res.render("shop/product-detail", {
@@ -47,17 +48,18 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   //use cart and get all products associated w/ user and render them to screen
   req.user
-    .getCart()
-    .then((products) => {
+    .populate("cart.items.productId")
+    .then((user) => {
+      console.log(user.cart.items);
+      const products = user.cart.items;
       res.render("shop/cart", {
-        pageTitle: "Your Cart",
         path: "/cart",
+        pageTitle: "Your Cart",
         products: products,
       });
     })
     .catch((err) => console.log(err));
 };
-// add product to cart in next commit
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
