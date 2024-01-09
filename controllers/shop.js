@@ -2,8 +2,9 @@ const Product = require("../models/product");
 //dont need to require Cart/Oder as i dont access it directly
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find() //fetch all products,turn to cursor for large amount of data(pageination)
     .then((products) => {
+      console.log(products);
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
@@ -41,7 +42,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("shop/index", {
         prods: products,
@@ -136,7 +137,7 @@ exports.postOrder = (req, res, next) => {
 };
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders() 
+    .getOrders()
     .then((orders) => {
       res.render("shop/orders", {
         pageTitle: "Your Orders",
