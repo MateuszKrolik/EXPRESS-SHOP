@@ -136,7 +136,7 @@ exports.postOrder = (req, res, next) => {
 };
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({ include: ["products"] }) //eager loading, array of products per order
+    .getOrders() 
     .then((orders) => {
       res.render("shop/orders", {
         pageTitle: "Your Orders",

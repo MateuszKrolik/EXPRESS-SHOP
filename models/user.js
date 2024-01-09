@@ -103,8 +103,10 @@ class User {
 
   getOrders() {
     const db = getDb();
-    // return db
-    //   .collection("orders")
+    return db
+      .collection("orders")
+      .find({'user._id': new ObjectId(this._id)})//specified path to nested property
+      .toArray();//
   }
 
   static findById(userId) {
