@@ -19,6 +19,11 @@ const productSchema = new Schema({
     type: String, //can also add validators
     required: true,
   },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User", //mongoose will automatically fetch the user data
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Product", productSchema);//giving mongoose model name and schema

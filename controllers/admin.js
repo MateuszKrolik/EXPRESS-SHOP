@@ -21,6 +21,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price, //part on left refers keys defined in product schema
     description: description,
     imageUrl: imageUrl,
+    userId: req.user, //mongoose will automatically fetch the user id
   }); //null for id because mongo will create one
   //create new product
   product
