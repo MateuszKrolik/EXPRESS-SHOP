@@ -4,11 +4,19 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
-
+const MongoDBStore = require("connect-mongodb-session")(session); //require returns a function that i need to pass session to
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
+MONGODB_URI =
+  "mongodb+srv://mateuszkrolik87:1I9UbNZqMksVzkNk@cluster0.gdjmk4f.mongodb.net/shop"; //removed retryWrites to avoid error
+
 const app = express();
+const store = new MongoDBStore({
+  //mongodbstore yields a constructor that i need to instantiate
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -19,7 +27,14 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({secret:'my secret', resave: false, saveUninitialized: false,}));
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
 
 app.use((req, res, next) => {
   User.findById("659d8089f0009dc0172b9c3c")
@@ -37,9 +52,7 @@ app.use(authRoutes); //everything that doesnt go to admin or shop will go to aut
 app.use(errorController.get404);
 
 mongoose
-  .connect(
-    "mongodb+srv://mateuszkrolik87:1I9UbNZqMksVzkNk@cluster0.gdjmk4f.mongodb.net/shop?retryWrites=true&w=majority"
-  )
+  .connect(MONGODB_URI)
   .then((result) => {
     User.findOne().then((user) => {
       if (!user) {
