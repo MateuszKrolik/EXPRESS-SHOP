@@ -3,6 +3,7 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require("express-session");
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -18,6 +19,7 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(session({secret:'my secret', resave: false, saveUninitialized: false,}));
 
 app.use((req, res, next) => {
   User.findById("659d8089f0009dc0172b9c3c")
@@ -30,7 +32,7 @@ app.use((req, res, next) => {
 
 app.use("/admin", adminRoutes); // order matters when using use() method, but not when using get()
 app.use(shopRoutes);
-app.use(authRoutes);//everything that doesnt go to admin or shop will go to auth
+app.use(authRoutes); //everything that doesnt go to admin or shop will go to auth
 
 app.use(errorController.get404);
 
