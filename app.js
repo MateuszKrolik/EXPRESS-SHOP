@@ -36,6 +36,19 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    //if user is not logged in
+    return next(); //continue with next middleware
+  }
+  User.findById(req.session.user._id) //to not hardcode user id
+    .then((user) => {
+      req.user = user; //mongoose model
+      next(); //instead of redirecting like in auth.js
+    })
+    .catch((err) => console.log(err));
+});
+
 app.use("/admin", adminRoutes); // order matters when using use() method, but not when using get()
 app.use(shopRoutes);
 app.use(authRoutes); //everything that doesnt go to admin or shop will go to auth
