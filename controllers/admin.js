@@ -7,7 +7,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: editMode,
-    isAuthenticated: req.isLoggedIn,
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -22,7 +22,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price, //part on left refers keys defined in product schema
     description: description,
     imageUrl: imageUrl,
-    userId: req.user, //mongoose will automatically fetch the user id
+    userId: req.session.user, //mongoose will automatically fetch the user id
   }); //null for id because mongo will create one
   //create new product
   product
@@ -55,7 +55,7 @@ exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product: product,
-        isAuthenticated: req.isLoggedIn,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -124,7 +124,7 @@ exports.getAdminProducts = (req, res, next) => {
         prods: products,
         pageTitle: "Admin Products",
         path: "/admin/products",
-        isAuthenticated: req.isLoggedIn,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));

@@ -36,15 +36,6 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  User.findById("659d8089f0009dc0172b9c3c")
-    .then((user) => {
-      req.user = user; //mongoose model
-      next(); // continue with next middleware
-    })
-    .catch((err) => console.log(err));
-});
-
 app.use("/admin", adminRoutes); // order matters when using use() method, but not when using get()
 app.use(shopRoutes);
 app.use(authRoutes); //everything that doesnt go to admin or shop will go to auth
