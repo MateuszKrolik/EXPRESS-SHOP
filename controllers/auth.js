@@ -43,20 +43,21 @@ exports.postSignup = (req, res, next) => {
         return res.redirect("/signup");
       }
       //hashing is async, so returns a promise
-      return bcrypt.hashSync(password, 12); //12 is the number of rounds/salt value
-    })
-    .then((hashedPassword) => {
-      const user = new User({
-        email: email,
-        //use bcryptjs to hash password
-        password: hashedPassword,
-        cart: { items: [] },
-      });
-      //save user
-      return user.save();
-    })
-    .then((result) => {
-      res.redirect("/login");
+      return bcrypt //12 is the number of rounds/salt value
+        .hashSync(password, 12)
+        .then((hashedPassword) => {
+          const user = new User({
+            email: email,
+            //use bcryptjs to hash password
+            password: hashedPassword,
+            cart: { items: [] },
+          });
+          //save user
+          return user.save();
+        })
+        .then((result) => {
+          res.redirect("/login");
+        });
     })
     .catch((err) => {
       console.log(err);
