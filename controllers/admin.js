@@ -1,6 +1,9 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect("/login");
+  }
   const editMode = req.query.edit === "true"; // Check the 'edit' query parameter
   res.render("admin/edit-product", {
     // .ejs can be omitted
