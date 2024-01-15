@@ -9,7 +9,13 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "files.associations": {
+    "*.ejs": "html"
+  },
   "emmet.includeLanguages": {
+    "ejs": "html"
+  },
+  "emmet.syntaxProfiles": {
     "ejs": "html"
   },
   "eslint.alwaysShowStatus": true,

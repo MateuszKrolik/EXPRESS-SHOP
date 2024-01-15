@@ -20,14 +20,34 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  User.findById("659d8089f0009dc0172b9c3c")
+  const email = req.body.email;
+  const password = req.body.password;
+  User.findOne({ email: email }) //mongoose method
     .then((user) => {
-      req.session.isLoggedIn = true;
-      req.session.user = user; //mongoose model
-      req.session.save((err) => {
-        console.log(err);
-        res.redirect("/");
-      });
+      if (!user) {
+        //if user doesnt exist
+        return res.redirect("/login");
+      }
+      //validate password
+      bcrypt
+        .compare(password, user.password) //returns a promise
+        .then((doMatch) => {
+          if (doMatch) {
+            //if passwords match
+            req.session.isLoggedIn = true;
+            req.session.user = user; //mongoose model
+            return req.session.save((err) => {
+              console.log(err);
+              res.redirect("/");
+            });
+          }
+          //if passwords dont match
+          res.redirect("/login");
+        })
+        .catch((err) => {
+          console.log(err);
+          res.redirect("/login");
+        });
     })
     .catch((err) => console.log(err));
 };
