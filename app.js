@@ -7,6 +7,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session); //require returns a function that i need to pass session to
 const errorController = require("./controllers/error");
 const User = require("./models/user");
+const csrf = require("csurf");
 
 MONGODB_URI =
   "mongodb+srv://mateuszkrolik87:1I9UbNZqMksVzkNk@cluster0.gdjmk4f.mongodb.net/shop"; //removed retryWrites to avoid error
@@ -17,6 +18,7 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+const csrfProtection = csrf();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -35,6 +37,7 @@ app.use(
     store: store,
   })
 );
+app.use(csrfProtection); //after session
 
 app.use((req, res, next) => {
   if (!req.session.user) {
