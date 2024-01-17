@@ -8,6 +8,7 @@ const MongoDBStore = require("connect-mongodb-session")(session); //require retu
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 const csrf = require("csurf");
+const flash = require("connect-flash");
 
 MONGODB_URI =
   "mongodb+srv://mateuszkrolik87:1I9UbNZqMksVzkNk@cluster0.gdjmk4f.mongodb.net/shop"; //removed retryWrites to avoid error
@@ -38,6 +39,7 @@ app.use(
   })
 );
 app.use(csrfProtection); //after session
+app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
