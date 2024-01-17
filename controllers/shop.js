@@ -97,7 +97,7 @@ exports.postOrder = (req, res, next) => {
       });
       const order = new Order({
         user: {
-          name: req.user.name, //req.user is a full user object
+          email: req.user.email, //req.user is a full user object
           userId: req.user, //mongoose will automatically pick the id
         },
         products: products,
