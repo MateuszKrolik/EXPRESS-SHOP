@@ -39,8 +39,6 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        isAuthenticated: req.session.isLoggedIn,
-        csrfToken: req.csrfToken(), //csrf token is added to every request
       });
     })
     .catch((err) => {

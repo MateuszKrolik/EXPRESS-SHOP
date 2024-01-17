@@ -52,6 +52,14 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+app.use((req, res, next) => {
+  res.locals = {
+    isAuthenticated: req.session.isLoggedIn,
+    csrfToken: req.csrfToken(), //csrf token is added to every request
+  };
+  next();
+});
+
 app.use("/admin", adminRoutes); // order matters when using use() method, but not when using get()
 app.use(shopRoutes);
 app.use(authRoutes); //everything that doesnt go to admin or shop will go to auth
