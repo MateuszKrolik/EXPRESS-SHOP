@@ -17,9 +17,16 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
+    errorMessage: message,
   });
 };
 
@@ -47,6 +54,7 @@ exports.postLogin = (req, res, next) => {
             });
           }
           //if passwords dont match
+          req.flash("error", "Invalid email or password.");
           res.redirect("/login");
         })
         .catch((err) => {
@@ -65,11 +73,15 @@ exports.postSignup = (req, res, next) => {
     .then((userDoc) => {
       //userDoc is mongoose model/document
       if (userDoc) {
+        req.flash(
+          "error",
+          "Email exists already, please pick a different one."
+        );
         return res.redirect("/signup");
       }
       //hashing is async, so returns a promise
       return bcrypt //12 is the number of rounds/salt value
-        .hashSync(password, 12)
+        .hash(password, 12)
         .then((hashedPassword) => {
           const user = new User({
             email: email,
