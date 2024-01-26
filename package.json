@@ -19,6 +19,7 @@
     "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^3.1.1",
     "csurf": "^1.11.0",
+    "dotenv": "^16.4.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-handlebars": "3.0",
@@ -26,6 +27,9 @@
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.3",
     "mysql2": "^3.6.5",
+    "nodemailer": "^6.9.8",
+    "nodemailer-postmark-transport": "^6.0.0",
+    "nodemailer-sparkpost-transport": "^2.2.0",
     "pug": "^3.0.2",
     "sequelize": "^6.35.2"
   }
