@@ -1,11 +1,11 @@
-const Product = require("../models/product");
+const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-  const editMode = req.query.edit === "true"; // Check the 'edit' query parameter
-  res.render("admin/edit-product", {
+  const editMode = req.query.edit === 'true'; // Check the 'edit' query parameter
+  res.render('admin/edit-product', {
     // .ejs can be omitted
-    pageTitle: "Add Product",
-    path: "/admin/add-product",
+    pageTitle: 'Add Product',
+    path: '/admin/add-product',
     editing: editMode,
     isAuthenticated: req.session.isLoggedIn,
   });
@@ -29,8 +29,8 @@ exports.postAddProduct = (req, res, next) => {
     .save() //provided by mongoose
     .then((result) => {
       // console.log(result);
-      console.log("Created Product");
-      res.redirect("/admin/products");
+      console.log('Created Product');
+      res.redirect('/admin/products');
     })
     .catch((err) => {
       console.log(err);
@@ -38,9 +38,9 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getEditProduct = (req, res, next) => {
-  const editMode = req.query.edit === "true";
+  const editMode = req.query.edit === 'true';
   if (!editMode) {
-    return res.redirect("/");
+    return res.redirect('/');
   }
   //prepopulate the form with the product info
   const prodId = req.params.productId;
@@ -48,11 +48,11 @@ exports.getEditProduct = (req, res, next) => {
     // Product.findByPk(prodId)
     .then((product) => {
       if (!product) {
-        return res.redirect("/");
+        return res.redirect('/');
       }
-      res.render("admin/edit-product", {
-        pageTitle: "Edit Product",
-        path: "/admin/edit-product",
+      res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/admin/edit-product',
         editing: editMode,
         product: product,
         isAuthenticated: req.session.isLoggedIn,
@@ -98,8 +98,8 @@ exports.postEditProduct = (req, res, next) => {
     })
     .then((result) => {
       //success promise
-      console.log("UPDATED PRODUCT");
-      res.redirect("/admin/products");
+      console.log('UPDATED PRODUCT');
+      res.redirect('/admin/products');
     })
     .catch((err) => console.log(err));
   //create new product
@@ -115,15 +115,15 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getAdminProducts = (req, res, next) => {
-  Product.find() //gives documents as well as cursor
+  Product.find({ userId: req.user._id })
     // .select("title price -_id") //selects title and price, -id excludes id
     // .populate("userId", "name") //populate userId with name
     .then((products) => {
       console.log(products);
-      res.render("admin/products", {
+      res.render('admin/products', {
         prods: products,
-        pageTitle: "Admin Products",
-        path: "/admin/products",
+        pageTitle: 'Admin Products',
+        path: '/admin/products',
         isAuthenticated: req.session.isLoggedIn,
       });
     })
@@ -134,8 +134,8 @@ exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findByIdAndDelete(prodId) //findByIdAndDelete is a mongoose method
     .then(() => {
-      console.log("DESTROYED PRODUCT");
-      res.redirect("/admin/products");
+      console.log('DESTROYED PRODUCT');
+      res.redirect('/admin/products');
     })
     .catch((err) => console.log(err));
 };
