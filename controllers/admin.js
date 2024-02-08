@@ -90,28 +90,20 @@ exports.postEditProduct = (req, res, next) => {
   // );
   Product.findById(prodId)
     .then((product) => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        return res.redirect('/');
+      }
       product.title = updatedTitle;
       product.imageUrl = updatedImageUrl;
       product.price = updatedPrice;
       product.description = updatedDesc;
-      return product.save();
-    })
-    .then((result) => {
-      //success promise
-      console.log('UPDATED PRODUCT');
-      res.redirect('/admin/products');
+      return product.save().then((result) => {
+        //success promise
+        console.log('UPDATED PRODUCT');
+        res.redirect('/admin/products');
+      });
     })
     .catch((err) => console.log(err));
-  //create new product
-  // const updatedProduct = new Product(
-  //   prodId,
-  //   updatedTitle,
-  //   updatedImageUrl,
-  //   updatedDesc,
-  //   updatedPrice
-  // );
-  // updatedProduct.save();
-  // res.redirect("/admin/products");
 };
 
 exports.getAdminProducts = (req, res, next) => {
@@ -132,7 +124,7 @@ exports.getAdminProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByIdAndDelete(prodId) //findByIdAndDelete is a mongoose method
+  Product.deleteOne({ _id: prodId, userId: req.user._id }) //findByIdAndDelete is a mongoose method
     .then(() => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
