@@ -167,8 +167,8 @@ exports.postReset = (req, res, next) => {
           from: process.env.POSTMARK_SENDER_SIGNATURE,
           subject: "Password reset",
           html: `
-          <p>You requested a password reset</p>
-          <p>Click this <a href="http://localhost:3000/reset/${token}"></a> to set a new password</p>
+            <p>You requested a password reset</p>
+            <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password</p>
           `,
         });
       })
