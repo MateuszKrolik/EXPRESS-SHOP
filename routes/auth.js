@@ -13,7 +13,15 @@ router.post('/login', authController.postLogin); //point @ controller w/ getLogi
 
 router.post(
   '/signup',
-  check('email').isEmail().withMessage('Please enter a valid e-mail'),
+  check('email')
+    .isEmail()
+    .withMessage('Please enter a valid e-mail')
+    .custom((value, { req }) => {
+      if (value === 'test@test.com') {
+        throw new Error('This email address is forbidden');
+      }
+      return true;
+    }),
   authController.postSignup
 );
 
