@@ -1,38 +1,38 @@
-const path = require("path");
+const path = require('path');
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoDBStore = require("connect-mongodb-session")(session); //require returns a function that i need to pass session to
-const errorController = require("./controllers/error");
-const User = require("./models/user");
-const csrf = require("csurf");
-const flash = require("connect-flash");
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session); //require returns a function that i need to pass session to
+const errorController = require('./controllers/error');
+const User = require('./models/user');
+const csrf = require('csurf');
+const flash = require('connect-flash');
 
 MONGODB_URI =
-  "mongodb+srv://mateuszkrolik87:1I9UbNZqMksVzkNk@cluster0.gdjmk4f.mongodb.net/shop"; //removed retryWrites to avoid error
+  'mongodb+srv://mateuszkrolik87:1I9UbNZqMksVzkNk@cluster0.gdjmk4f.mongodb.net/shop'; //removed retryWrites to avoid error
 
 const app = express();
 const store = new MongoDBStore({
   //mongodbstore yields a constructor that i need to instantiate
   uri: MONGODB_URI,
-  collection: "sessions",
+  collection: 'sessions',
 });
 const csrfProtection = csrf();
 
-app.set("view engine", "ejs");
-app.set("views", "views");
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const authRoutes = require("./routes/auth");
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
-    secret: "my secret",
+    secret: 'my secret',
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -43,15 +43,19 @@ app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
-    //if user is not logged in
-    return next(); //continue with next middleware
+    return next();
   }
-  User.findById(req.session.user._id) //to not hardcode user id
+  User.findById(req.session.user._id)
     .then((user) => {
-      req.user = user; //mongoose model
-      next(); //instead of redirecting like in auth.js
+      if (!user) {
+        return next();
+      }
+      req.user = user;
+      next();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      throw new Error(err);
+    });
 });
 
 app.use((req, res, next) => {
@@ -62,7 +66,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/admin", adminRoutes); // order matters when using use() method, but not when using get()
+app.use('/admin', adminRoutes); // order matters when using use() method, but not when using get()
 app.use(shopRoutes);
 app.use(authRoutes); //everything that doesnt go to admin or shop will go to auth
 
