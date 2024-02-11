@@ -70,6 +70,8 @@ app.use('/admin', adminRoutes); // order matters when using use() method, but no
 app.use(shopRoutes);
 app.use(authRoutes); //everything that doesnt go to admin or shop will go to auth
 
+app.get('/500', errorController.get500);
+
 app.use(errorController.get404);
 
 mongoose
