@@ -9,6 +9,7 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 MONGODB_URI =
   'mongodb+srv://mateuszkrolik87:1I9UbNZqMksVzkNk@cluster0.gdjmk4f.mongodb.net/shop'; //removed retryWrites to avoid error
@@ -29,6 +30,7 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ dest: 'images' }).single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
