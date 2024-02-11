@@ -71,7 +71,10 @@ exports.postAddProduct = (req, res, next) => {
       //   errorMessage: 'Database operation failed, please try again.',
       //   validationErrors: [],
       // });
-      res.redirect('/500');
+      // res.redirect('/500');
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -83,7 +86,6 @@ exports.getEditProduct = (req, res, next) => {
   //prepopulate the form with the product info
   const prodId = req.params.productId;
   Product.findById(prodId) //findById is a mongoose method
-    // Product.findByPk(prodId)
     .then((product) => {
       if (!product) {
         return res.redirect('/');
@@ -100,18 +102,10 @@ exports.getEditProduct = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
-  //   if (!product) {
-  //     return res.redirect("/");
-  //   }
-  //   res.render("admin/edit-product", {
-  //     pageTitle: "Edit Product",
-  //     path: "/admin/edit-product",
-  //     editing: editMode,
-  //     product: product,
-  //   });
-  // });
 };
 
 exports.postEditProduct = (req, res, next) => {
