@@ -20,10 +20,25 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.file;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
-  console.log(imageUrl);
+  if (!image) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title: title,
+        price: price,
+        description: description,
+      },
+      errorMessage: 'Attached file is not an image.',
+      validationErrors: [],
+    });
+  }
+  console.log(image);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
@@ -34,7 +49,6 @@ exports.postAddProduct = (req, res, next) => {
       hasError: true,
       product: {
         title: title,
-        imageUrl: imageUrl,
         price: price,
         description: description,
       },
@@ -42,10 +56,13 @@ exports.postAddProduct = (req, res, next) => {
       validationErrors: errors.array(),
     });
   }
+
+  const imageUrl = image.path;
+
   const product = new Product({
     // _id: new mongoose.Types.ObjectId('659d87aa24139f9b776b091e'),
     title: title, //part on right refers to data received from controller action
-    price: price, //part on left refers keys defined in product schema
+    price: price, //part on left ąrefers keys defined in product schema
     description: description,
     imageUrl: imageUrl,
     userId: req.user, //mongoose will automatically fetch the user id
@@ -113,7 +130,7 @@ exports.postEditProduct = (req, res, next) => {
   //3 things: fetch info for product, create new product with updated info and call save
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
-  const updatedImageUrl = req.body.imageUrl;
+  const image = req.file;
   const updatedPrice = req.body.price;
   const updatedDesc = req.body.description;
 
@@ -127,7 +144,6 @@ exports.postEditProduct = (req, res, next) => {
       hasError: true,
       product: {
         title: updatedTitle,
-        imageUrl: updatedImageUrl,
         price: updatedPrice,
         description: updatedDesc,
         _id: prodId,
@@ -143,7 +159,9 @@ exports.postEditProduct = (req, res, next) => {
         return res.redirect('/');
       }
       product.title = updatedTitle;
-      product.imageUrl = updatedImageUrl;
+      if (image) {
+        product.imageUrl = image.path;
+      }
       product.price = updatedPrice;
       product.description = updatedDesc;
       return product.save().then((result) => {

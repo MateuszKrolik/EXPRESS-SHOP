@@ -59,6 +59,7 @@ app.use(
   }).single('image')
 );
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(
   session({
     secret: 'my secret',
@@ -72,7 +73,7 @@ app.use(flash());
 
 app.use((req, res, next) => {
   res.locals = {
-    isAuthenticated: req.session.isLoggedIn,
+    isAuthenticated: req.session ? req.session.isLoggedIn : false,
     csrfToken: req.csrfToken(), //csrf token is added to every request
   };
   next();
@@ -110,7 +111,7 @@ app.use((error, req, res, next) => {
   res.status(500).render('500', {
     pageTitle: 'Error!',
     path: '/500',
-    isAuthenticated: req.session.isLoggedIn,
+    isAuthenticated: req.session ? req.session.isLoggedIn : false,
   });
 });
 
