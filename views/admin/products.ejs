@@ -28,19 +28,16 @@
                                 </div>
                                 <div class="card__actions">
                                     <a href="/admin/edit-product/<%= product._id %>?edit=true" class="btn">Edit</a>
-                                    <form action="/admin/delete-product" method="POST">
-                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">            
-                                        <input type="hidden" name="productId" value="<%= product._id %>">
-                                        <button class="btn" type="submit">Delete</button>
-                                    </form>
-
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">            
+                                    <input type="hidden" name="productId" value="<%= product._id %>">
+                                    <button class="btn" type="button" onclick="deleteProduct(this)">Delete</button>
                                 </div>
                             </article>
                             <% } %>
                     </div>
-                    <%- include('../includes/pagination.ejs', {currentPage:currentPage, nextPage:nextPage, previousPage:previousPage, lastPage:lastPage, hasNextPage:hasNextPage, hasPreviousPage:hasPreviousPage}) %>
                     <% } else { %>
                         <h1>No Products Found!</h1>
                         <% } %>
             </main>
             <%- include('../includes/end.ejs') %>
+            <script src="/js/admin.js"></script>
