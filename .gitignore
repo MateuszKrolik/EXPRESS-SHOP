@@ -129,4 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Passwords
 .env
+nodemon.json
+
+# MacOS
+.DS_Store
