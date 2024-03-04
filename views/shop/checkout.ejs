@@ -7,10 +7,12 @@
         <main>
             <ul class="cart__item-list">
                 <% products.forEach(p => { %>
-                    <li class="cart__item">
-                        <h1><%= p.productId.title %></h1> 
-                        <h2>Quantity: <%= p.quantity %></h2>
-                    </li>
+                    <% if (p.productId) { %>
+                        <li class="cart__item">
+                            <h1><%= p.productId.title %></h1> 
+                            <h2>Quantity: <%= p.quantity %></h2>
+                        </li>
+                    <% } %>
                 <% }) %>
             </ul>
             <div class="centered">

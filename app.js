@@ -11,10 +11,13 @@ const User = require("./models/user");
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const MulterAzureStorage = require("multer-azure-storage");
+
 const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const https = require("https");
+require("dotenv").config();
 
 MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.gdjmk4f.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`;
 
@@ -29,14 +32,24 @@ const csrfProtection = csrf();
 const privateKey = fs.readFileSync("server.key");
 const certificate = fs.readFileSync("server.cert");
 
-const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "images");
-    },
-    filename: (req, file, cb) => {
-        cb(null, new Date().toISOString() + "-" + file.originalname);
-    },
+const fileStorage = new MulterAzureStorage({
+    azureStorageConnectionString: `${process.env.AZURE_STORAGE_CONNECTION_STRING}`,
+    containerName: "images",
+    containerSecurity: "blob",
 });
+const invoiceStorage = new MulterAzureStorage({
+    azureStorageConnectionString: `${process.env.AZURE_STORAGE_CONNECTION_STRING}`,
+    containerName: "invoices",
+    containerSecurity: "blob",
+});
+// const fileStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "images");
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, new Date().toISOString() + "-" + file.originalname);
+//     },
+// });
 
 const fileFilter = (req, file, cb) => {
     if (
@@ -62,18 +75,44 @@ const accessLogStream = fs.createWriteStream(
     { flags: "a" } // append
 );
 
-app.use(helmet());
+const cspDirectives = {
+    defaultSrc: ["'self'"],
+    imgSrc: [
+        "'self'",
+        "data:",
+        "https://myshopwebappstorage.blob.core.windows.net",
+    ],
+    scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com"],
+    scriptSrcAttr: ["'unsafe-inline'"],
+    styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+    fontSrc: ["'self'", "https://fonts.gstatic.com"],
+    frameSrc: ["https://js.stripe.com"],
+};
+
+app.use(helmet({ contentSecurityPolicy: { directives: cspDirectives } }));
 app.use(compression());
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
     multer({
-        dest: "images",
         storage: fileStorage,
         fileFilter: fileFilter,
     }).single("image")
 );
+app.use(
+    "/upload-invoice",
+    multer({
+        storage: invoiceStorage,
+    }).single("invoice")
+);
+// app.use(
+//     multer({
+//         dest: "images",
+//         storage: fileStorage,
+//         fileFilter: fileFilter,
+//     }).single("image")
+// );
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
@@ -96,7 +135,6 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    // throw new Error('Sync Dummy');
     if (!req.session.user) {
         return next();
     }

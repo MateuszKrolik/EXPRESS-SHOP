@@ -5,7 +5,7 @@
     "main": "app.js",
     "scripts": {
         "test": "ec ho \"Error: no test specified\" && exit 1",
-        "start": "NODE_ENV=production MONGO_USER=${MONGO_USER} MONGO_PASSWORD=${MONGO_PASSWORD} MONGO_DEFAULT_DATABASE=${MONGO_DEFAULT_DATABASE} STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY} POSTMARK_API_KEY=${POSTMARK_API_KEY} POSTMARK_SENDER_SIGNATURE=${POSTMARK_SENDER_SIGNATURE} nodemon app.js",
+        "start": "NODE_ENV=production MONGO_USER=${MONGO_USER} MONGO_PASSWORD=${MONGO_PASSWORD} MONGO_DEFAULT_DATABASE=${MONGO_DEFAULT_DATABASE} STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY} POSTMARK_API_KEY=${POSTMARK_API_KEY} POSTMARK_SENDER_SIGNATURE=${POSTMARK_SENDER_SIGNATURE} AZURE_STORAGE_CONNECTION_STRING=${AZURE_STORAGE_CONNECTION_STRING} nodemon app.js",
         "start-server": "node app.js",
         "start:dev": "nodemon app.js"
     },
@@ -15,6 +15,7 @@
         "nodemon": "^3.0.2"
     },
     "dependencies": {
+        "@azure/storage-blob": "^12.17.0",
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.20.2",
         "compression": "^1.7.4",
@@ -32,6 +33,7 @@
         "mongoose": "^8.0.3",
         "morgan": "^1.10.0",
         "multer": "^1.4.5-lts.1",
+        "multer-azure-storage": "^0.2.0",
         "mysql2": "^3.6.5",
         "nodemailer": "^6.9.8",
         "nodemailer-postmark-transport": "^6.0.0",

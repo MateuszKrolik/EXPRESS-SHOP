@@ -2,6 +2,9 @@ const fs = require("fs");
 const path = require("path");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+const { BlobServiceClient } = require("@azure/storage-blob");
+const stream = require("stream");
+
 const PDFDocument = require("pdfkit");
 
 const Product = require("../models/product");
@@ -144,7 +147,7 @@ exports.getCheckout = (req, res, next) => {
     req.user
         .populate("cart.items.productId")
         .then((user) => {
-            products = user.cart.items;
+            products = user.cart.items.filter((p) => p.productId); //null check
             total = 0;
             products.forEach((p) => {
                 total += p.quantity * p.productId.price;
@@ -195,12 +198,14 @@ exports.getCheckoutSuccess = (req, res, next) => {
         .populate("cart.items.productId")
         .then((user) => {
             console.log(user.cart.items);
-            const products = user.cart.items.map((i) => {
-                return {
-                    quantity: i.quantity,
-                    productData: { ...i.productId._doc },
-                }; //._doc helps omit metadata, spread operator inside new object to pull out all data from document, then store it in productData
-            });
+            const products = user.cart.items
+                .filter((i) => i.productId) // Filter out items with no product
+                .map((i) => {
+                    return {
+                        quantity: i.quantity,
+                        productData: { ...i.productId._doc },
+                    }; //._doc helps omit metadata, spread operator inside new object to pull out all data from document, then store it in productData
+                });
             const order = new Order({
                 user: {
                     email: req.user.email, //req.user is a full user object
@@ -228,14 +233,16 @@ exports.postOrder = (req, res, next) => {
         .populate("cart.items.productId")
         .then((user) => {
             console.log(user.cart.items);
-            const products = user.cart.items.map((i) => {
-                //i refers to items
-                //map to store changed items in products array
-                return {
-                    quantity: i.quantity,
-                    productData: { ...i.productId._doc },
-                }; //._doc helps omit metadata, spread operator inside new object to pull out all data from document, then store it in productData
-            });
+            const products = user.cart.items
+                .filter((i) => i.productId) // Filter out items with no product
+                .map((i) => {
+                    //i refers to items
+                    //map to store changed items in products array
+                    return {
+                        quantity: i.quantity,
+                        productData: { ...i.productId._doc },
+                    }; //._doc helps omit metadata, spread operator inside new object to pull out all data from document, then store it in productData
+                });
             const order = new Order({
                 user: {
                     email: req.user.email, //req.user is a full user object
@@ -274,13 +281,6 @@ exports.getOrders = (req, res, next) => {
         });
 };
 
-// exports.getCheckout = (req, res, next) => {
-//   res.render("shop/checkout", {
-//     pageTitle: "Checkout",
-//     path: "/checkout",
-//   });
-// };
-
 exports.getInvoice = (req, res, next) => {
     const orderId = req.params.orderId;
     Order.findById(orderId)
@@ -292,7 +292,7 @@ exports.getInvoice = (req, res, next) => {
                 return next(new Error("Unauthorized"));
             }
             const invoiceName = "invoice-" + orderId + ".pdf";
-            const invoicePath = path.join("data", "invoices", invoiceName);
+            // const invoicePath = path.join("data", "invoices", invoiceName);
 
             const pdfDoc = new PDFDocument();
             res.setHeader("Content-Type", "application/pdf");
@@ -300,8 +300,28 @@ exports.getInvoice = (req, res, next) => {
                 "Content-Disposition",
                 'inline; filename="' + invoiceName + '"'
             );
-            pdfDoc.pipe(fs.createWriteStream(invoicePath));
-            pdfDoc.pipe(res);
+            // pdfDoc.pipe(fs.createWriteStream(invoicePath));
+            // pdfDoc.pipe(res);
+
+            const readable = new stream.PassThrough();
+            pdfDoc.pipe(readable);
+
+            const blobServiceClient = BlobServiceClient.fromConnectionString(
+                process.env.AZURE_STORAGE_CONNECTION_STRING
+            );
+            const containerName = "invoices";
+            const containerClient =
+                blobServiceClient.getContainerClient(containerName);
+            const blockBlobClient =
+                containerClient.getBlockBlobClient(invoiceName);
+
+            readable.pipe(res);
+            const uploadStream = new stream.PassThrough();
+            pdfDoc.pipe(uploadStream);
+
+            blockBlobClient.uploadStream(uploadStream).catch((err) => {
+                next(err);
+            });
 
             pdfDoc.fontSize(26).text("Invoice", {
                 underline: true,
@@ -325,19 +345,6 @@ exports.getInvoice = (req, res, next) => {
             pdfDoc.fontSize(20).text("Total Price: $" + totalPrice);
 
             pdfDoc.end();
-            // fs.readFile(invoicePath, (err, data) => {
-            //   if (err) {
-            //     return next(err);
-            //   }
-            //   res.setHeader('Content-Type', 'application/pdf');
-            //   res.setHeader(
-            //     'Content-Disposition',
-            //     'inline; filename="' + invoiceName + '"'
-            //   );
-            //   res.send(data);
-            // });
-            // const file = fs.createReadStream(invoicePath);
-            // file.pipe(res);
         })
         .catch((err) => {
             next(err);
