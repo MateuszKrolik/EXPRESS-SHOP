@@ -10,7 +10,9 @@ const router = express.Router();
 router.get('/', shopController.getIndex);
 
 router.get('/products', shopController.getProducts);
+
 router.get('/products/:productId', shopController.getProduct); //:productId is a dynamic segment
+
 router.get('/cart', isAuth, shopController.getCart);
 
 router.post('/cart', isAuth, shopController.postCart);
